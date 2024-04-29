@@ -6,6 +6,7 @@ export interface Uploader {
   id: number;
   description: string;
   file: File | null;
+  link?: string;
 }
 
 // Define the initial state of the uploader slice
@@ -46,7 +47,7 @@ export const saveUploader = createAsyncThunk(
 export const deleteUploader = createAsyncThunk(
   "uploader/delete",
   async (id: number, thunkAPI) => {
-    await axios.delete(`http://localhost:3003/api/files/${id}`);
+    await axios.delete(`http://localhost:3003/api/files/deleteFile/${id}`);
     return id;
   }
 );
@@ -58,7 +59,7 @@ export const updateUploader = createAsyncThunk(
     const formData = new FormData();
     formData.append("description", description);
     formData.append("file", file);
-    const response = await axios.put(`http://localhost:3003/api/files/${id}`, formData);
+    const response = await axios.put(`http://localhost:3003/api/files/update/${id}`, formData);
     return response.data;
   }
 );
@@ -100,9 +101,29 @@ export const uploaderSlice = createSlice({
 
     builder.addCase(saveUploader.fulfilled, (state, action) => {
         state.uploaders.push(action.payload); // Assuming the payload is an Uploader object
+      }).addCase(saveUploader.pending, (state) => {
+        state.getFileStatus = "loading";
+      }).addCase(saveUploader.rejected, (state) => {
+        state.getFileStatus = "failed";
       })
-      .addCase(deleteUploader.fulfilled, (state, action) => {
+
+
+
+      builder.addCase(deleteUploader.fulfilled, (state, action) => {
         state.uploaders = state.uploaders.filter(uploader => uploader.id !== action.payload);
+      }).addCase(deleteUploader.pending, (state) => {
+        state.getFileStatus = "loading";
+      }).addCase(deleteUploader.rejected, (state) => {
+        state.getFileStatus = "failed";
+      })
+
+
+      builder
+      .addCase(updateUploader.pending, (state) => {
+        state.getFileStatus = "loading";
+      })
+      .addCase(updateUploader.rejected, (state) => {
+        state.getFileStatus = "failed";
       })
       .addCase(updateUploader.fulfilled, (state, action) => {
         const updatedUploader = action.payload;

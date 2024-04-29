@@ -1,16 +1,30 @@
 import React from "react";
-import { useAppSelector } from "../store/store";
-import { Uploader } from "../store/features/uploaderSlice";
+import { useAppSelector, useAppDispatch } from "../store/store";
+import { Uploader, deleteUploader } from "../store/features/uploaderSlice";
 import "./FileList.style.css";
 import { saveAs } from "file-saver";
+import { useNavigate } from "react-router-dom";
 
 const FileList = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { uploaders, getFileStatus } = useAppSelector((state) => state.uploader);
 
-  const handleDownload = (file: File | null, fileName: string) => {
-    if (file) {
-      saveAs(file, fileName); // Use FileSaver.js to trigger the download
-    }
+  const handleDownload = (file: string) => {
+      saveAs(file); // Use FileSaver.js to trigger the download
+  };
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteUploader(id));
+  };
+
+  const handleEdit = (id: number) => {
+    navigate(`/edit/${id}`);
+  };
+
+  const handleView = (description: string) => {
+    // Show popup or modal with description and file content
+    alert(`Description: ${description}\nFile:`);
   };
 
   return (
@@ -30,15 +44,19 @@ const FileList = () => {
               <td>{uploader.id}</td>
               <td>{uploader.description}</td>
               <td>
-                {uploader.file ? (
-                  <button onClick={() => handleDownload(uploader.file, uploader.description)}>
-                    Download
-                  </button>
+                {
+                uploader.link  ? (
+                  <button onClick={() => handleDownload(uploader.link!)}>Download</button>
                 ) : (
                   "N/A"
-                )}
+                )
+                }
               </td>
-              <td>Action</td>
+              <td>
+                <button onClick={() => handleView(uploader.description)}>View</button>
+                <button onClick={() => handleEdit(uploader.id)}>Edit</button>
+                <button onClick={() => handleDelete(uploader.id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>

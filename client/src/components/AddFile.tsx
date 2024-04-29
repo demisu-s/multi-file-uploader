@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store/store";
 import { saveUploader } from "../store/features/uploaderSlice";
-import "./AddForm.style.css"
+import "./AddForm.style.css";
 
 const AddFile = () => {
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate(); // Use useNavigate hook to navigate between routes
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -14,7 +16,7 @@ const AddFile = () => {
 
     const formData = {
       description,
-      file: file as File
+      file: file as File,
     };
 
     console.log("Form data:", formData);
@@ -24,6 +26,7 @@ const AddFile = () => {
         console.log("Save successful");
         setDescription(""); // Reset description state
         setFile(null); // Reset file state
+        navigate("/"); // Navigate to the home ("/") route after successful submission
       })
       .catch((error) => {
         console.error("Save failed:", error);
@@ -38,7 +41,7 @@ const AddFile = () => {
 
   return (
     <div className="form-container">
- <article className="articles-header">
+      <article className="articles-header">
         <header>
           <h1>Multi-File Uploader</h1>
         </header>
@@ -61,7 +64,7 @@ const AddFile = () => {
         </div>
       </form>
     </div>
-  );
+  ); 
 };
 
 export default AddFile;
