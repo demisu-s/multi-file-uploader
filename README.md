@@ -1,5 +1,5 @@
 # multi-file-uploader
-This web based application use To Upload mulri-file
+This web based application use To Upload multi-file
 i built it by using according to instruction the following technology for backend express js,node js,mysql,for frontend i use React js,Redux toolkit for state management
 
 Node.js - JavaScript runtime built on Chrome's V8 JavaScript engine.
@@ -10,7 +10,7 @@ Sequelize is a Node.js ORM (Object-Relational Mapping) library for managing SQL 
 
 to run this project
 
-Go to the api folder
+Go to the client folder
 
 run the command "npm install" to resolve the dependencies In config.env file change DB_URI to your particular URI and make sure connecting database after that run the command "npm start".
 
